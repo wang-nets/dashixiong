@@ -12,10 +12,10 @@ class StudentController(object):
             raise
 
     @staticmethod
-    def get_student_info_by_major_id(major_id):
+    def get_student_info_by_major_id(major_id, student_id):
         try:
             student = StudentModel()
-            return student.get_student_info_by_major_id(major_id=major_id)
+            return student.get_student_info_by_major_id(major_id=major_id, student_id=student_id)
         except Exception:
             raise
 

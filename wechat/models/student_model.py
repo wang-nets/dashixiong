@@ -3,26 +3,12 @@ from wechat.models.models_base import Students
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
 from sqlalchemy import and_, or_, desc
+from wechat.commons.utils import handle_name
 import datetime
 import traceback
 import logging
 
 LOG = logging.getLogger("wechat")
-
-"""
-student_id = Column(VARCHAR(128), index=True, nullable=False, unique=True)
-name = Column(VARCHAR(64), index=True, nullable=False)
-year = Column(Integer, index=True, nullable=False)
-major_id = Column(Integer, ForeignKey("majors.id"))
-subject_1 = Column(Float, index=True, nullable=False)
-subject_2 = Column(Float, index=True, nullable=False)
-subject_3 = Column(Float, index=True, nullable=False)
-subject_4 = Column(Float, index=True, nullable=False)
-total = Column(Float, nullable=False)
-create_time = Column(DateTime, nullable=False)
-create_user = Column(VARCHAR(128), nullable=False)
-have_picture = Column(Boolean, nullable=False)
-"""
 
 
 class StudentModel(object):
@@ -58,7 +44,7 @@ class StudentModel(object):
             raise DBOperateException("Get student info error")
 
     @staticmethod
-    def get_student_info_by_major_id(major_id=None):
+    def get_student_info_by_major_id(major_id=None, student_id=None):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
@@ -68,24 +54,30 @@ class StudentModel(object):
                     order_by(desc(Students.total)).all()
                 student_info_dict['count'] = session.query(Students).filter(Students.major_id == major_id).\
                     count()
+
             else:
                 student_info = session.query(Students).order_by(desc(Students.total)).all()
             student_info_list = list()
+            seq = 1
             for student in student_info:
                 student_dict = dict()
+                student_dict['seq'] = seq
                 student_dict['id'] = student.id
                 student_dict['major_id'] = student.major_id
                 student_dict['student_id'] = student.student_id
-                student_dict['name'] = student.name
+                if student_dict['student_id'] == student_id:
+                    student_info_dict['seq'] = seq
+                student_dict['name'] = handle_name(student.name)
                 student_dict['year'] = student.year
                 student_dict['subject_1'] = student.subject_1
                 student_dict['subject_2'] = student.subject_2
                 student_dict['subject_3'] = student.subject_3
                 student_dict['subject_4'] = student.subject_4
                 student_dict['total'] = student.total
-                student_dict['create_time'] =student.create_time
+                student_dict['create_time'] = student.create_time.strftime('%Y-%m-%d %H:%M:%S')
                 student_dict['create_user'] = student.create_user
                 student_dict['have_picture'] = student.have_picture
+                seq += 1
                 student_info_list.append(student_dict)
             student_info_dict['student_info'] = student_info_list
             return student_info_dict
@@ -126,7 +118,7 @@ class StudentModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
-            session.query(Students).filter(Students.id == student_id).delete()
+            session.query(Students).filter(Students.student_id == student_id).delete()
             session.commit()
         except Exception:
             LOG.info("Call delete_student_by_id error:%s" % traceback.format_exc())
@@ -137,8 +129,7 @@ class StudentModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
-            student_info = session.query(Students).filter(Students.id == kwargs['id']).one()
-            student_info.student_id = kwargs['student_id']
+            student_info = session.query(Students).filter(Students.student_id == kwargs['student_id']).one()
             student_info.name = kwargs['name']
             student_info.year = kwargs['year']
             student_info.major_id = kwargs['major_id']
