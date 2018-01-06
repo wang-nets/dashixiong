@@ -59,8 +59,8 @@ api.add_resource(MajorPutDelete, '/api/v1/<int:college_id>/major/<int:major_id>'
 
 from wechat.views.v1.student import StudentPost, StudentGet, StudentPutDelete
 api.add_resource(StudentPost, '/api/v1/student')
-api.add_resource(StudentGet, '/api/v1/<int:major_id>/student')
-api.add_resource(StudentPutDelete, '/api/v1/<int:major_id>/student/<int:student_id>')
+api.add_resource(StudentGet, '/api/v1/<int:major_id>/student/<string:student_id>')
+api.add_resource(StudentPutDelete, '/api/v1/<int:major_id>/student/<string:student_id>')
 
 from wechat.views.v1.university import PutPicExample
 api.add_resource(PutPicExample, '/api/v1/picture')
