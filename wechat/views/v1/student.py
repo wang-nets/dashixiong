@@ -140,7 +140,7 @@ class StudentPutDelete(Resource):
             return self.ret_dict, 500
 
 
-class UploadPic(Resource):
+class PicPost(Resource):
     def __init__(self):
         self.req_parse = reqparse.RequestParser()
         self.ret_dict = {
@@ -154,7 +154,8 @@ class UploadPic(Resource):
         try:
             print dir(request)
             print request.files
-            # print request.data
+            print request.data
+            print request.args
             files = request.files
             args = request.args
             args_dict = dict()
