@@ -105,33 +105,3 @@ class UniversityPutDelete(Resource):
             return self.ret_dict, 500
 
 
-class PutPicExample(Resource):
-    def __init__(self):
-        self.req_parse = reqparse.RequestParser()
-        self.ret_dict = {
-            'success': 'false',
-            'data': '',
-            'msg': ''
-        }
-
-    def post(self):
-        import base64
-        from io import BytesIO
-        from PIL import Image
-        try:
-            print dir(request)
-            print request.files
-            # print request.data
-            files = request.files
-            args = request.args
-            args_dict = dict()
-            args_dict['picture'] = files.get('file', None)
-            args_dict['md5'] = args.get('md5', None)
-            print args_dict['md5']
-            print args_dict['picture'].stream
-            # args_dict['picture'] = base64.b64decode(args_dict['picture'])
-            image = Image.open(args_dict['picture'].stream)
-            image.save('./new-example.jpg')
-
-        except Exception:
-            print traceback.format_exc()
