@@ -160,11 +160,11 @@ class PicPost(Resource):
             args = request.args
             args_dict = dict()
             args_dict['picture'] = files.get('file', None)
-            args_dict['md5'] = args.get('md5', None)
-            print args_dict['md5']
-            print args_dict['picture'].stream
+            args_dict['file'] = args.get('file', None)
+            print args_dict['picture']
+            print args_dict['file']
             # args_dict['picture'] = base64.b64decode(args_dict['picture'])
-            image = Image.open(args_dict['picture'].stream)
+            image = Image.open(args_dict['file'])
             image.save('./new-example.jpg')
         except Exception:
             print traceback.format_exc()
