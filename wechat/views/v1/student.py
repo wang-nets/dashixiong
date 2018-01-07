@@ -163,9 +163,18 @@ class PicPost(Resource):
             args_dict['file'] = args.get('file', None)
             print args_dict['picture']
             print args_dict['file']
+
             # args_dict['picture'] = base64.b64decode(args_dict['picture'])
+
+            file_type = args_dict['picture'].content_type
+            type_list = file_type.split('/')
+            if type_list[0] == "image":
+                if type_list[1] == "jpeg":
+                    type_suffix = "jpg"
+                elif type_list[1] == "png":
+                    type_suffix = "png"
             image = Image.open(args_dict['picture'].stream)
-            image.save('./new-example.jpg')
+            image.save('./new-example.%s' % type_suffix)
         except Exception:
             print traceback.format_exc()
 
