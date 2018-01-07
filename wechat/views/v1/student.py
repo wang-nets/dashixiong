@@ -164,7 +164,7 @@ class PicPost(Resource):
             print args_dict['picture']
             print args_dict['file']
             # args_dict['picture'] = base64.b64decode(args_dict['picture'])
-            image = Image.open(args_dict['file'])
+            image = Image.open(args_dict['picture'].stream)
             image.save('./new-example.jpg')
         except Exception:
             print traceback.format_exc()
