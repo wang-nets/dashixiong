@@ -2,3 +2,4 @@
 *.xml
 *.log
 .idea/*
+env-config/config.py
