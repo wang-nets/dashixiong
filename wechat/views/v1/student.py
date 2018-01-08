@@ -4,6 +4,7 @@ import logging
 import datetime
 import traceback
 from wechat.controllers.student import StudentController
+from wechat.commons.aliyun import save_image_to_local, upload_image_to_oss
 from flask import request
 from wechat.exceptions import InvalidRequestException
 LOG = logging.getLogger("wechat")
@@ -150,31 +151,16 @@ class PicPost(Resource):
         }
 
     def post(self):
-        from PIL import Image
         try:
-            print dir(request)
-            print request.files
-            print request.data
-            print request.args
             files = request.files
-            args = request.args
-            args_dict = dict()
-            args_dict['picture'] = files.get('file', None)
-            args_dict['file'] = args.get('file', None)
-            print args_dict['picture']
-            print args_dict['file']
-
-            # args_dict['picture'] = base64.b64decode(args_dict['picture'])
-
-            file_type = args_dict['picture'].content_type
-            type_list = file_type.split('/')
-            if type_list[0] == "image":
-                if type_list[1] == "jpeg":
-                    type_suffix = "jpg"
-                elif type_list[1] == "png":
-                    type_suffix = "png"
-            image = Image.open(args_dict['picture'].stream)
-            image.save('./new-example.%s' % type_suffix)
-        except Exception:
-            print traceback.format_exc()
+            image = files.get('file', None)
+            local_name = save_image_to_local(image)
+            pic_url = upload_image_to_oss(local_name)
+            self.ret_dict['success'] = "true"
+            self.ret_dict['data'] = pic_url
+            return self.ret_dict, 200
+        except Exception as e:
+            LOG.error("Call url:/api/v1/picture error:%s" % traceback.format_exc())
+            self.ret_dict['msg'] = e.message
+            return self.ret_dict, 500
 

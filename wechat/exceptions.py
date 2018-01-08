@@ -7,3 +7,7 @@ class DBOperateException(Exception):
 
 class InvalidRequestException(Exception):
     pass
+
+
+class InvalidOSSRequestException(Exception):
+    pass
