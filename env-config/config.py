@@ -33,7 +33,7 @@ LOG_CFG = {
 }
 
 
-SQLALCHEMY_DATABASE_URI = 'mysql://root:p4ukVGRe#@localhost:3306/dashixiong?charset=utf8'
+SQLALCHEMY_DATABASE_URI = ''
 SQLALCHEMY_POOL_SIZE = 50
 SQLALCHEMY_MAX_OVERFLOW = 15
 
