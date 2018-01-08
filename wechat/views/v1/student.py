@@ -152,7 +152,7 @@ class PicPost(Resource):
 
     def post(self):
         try:
-            args = request.json
+            args = request.form
             args_dict = dict()
             args_dict['major_id'] = args.get('major_id', None)
             args_dict['student_id'] = args.get('student_id', None)
@@ -187,7 +187,7 @@ class PicPost(Resource):
             files = request.files
             image = files.get('file', None)
             local_name = save_image_to_local(image)
-            pic_url = upload_image_to_oss(local_name)
+            pic_url = upload_image_to_oss(local_name, args_dict['student_id'])
             self.ret_dict['success'] = "true"
             self.ret_dict['data'] = pic_url
             return self.ret_dict, 200

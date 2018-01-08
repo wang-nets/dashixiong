@@ -3,6 +3,7 @@ from wechat.models.models_base import Students
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
 from sqlalchemy import and_, or_, desc
+from wechat import app
 from wechat.commons.utils import handle_name
 import datetime
 import traceback
@@ -77,6 +78,7 @@ class StudentModel(object):
                 student_dict['create_time'] = student.create_time.strftime('%Y-%m-%d %H:%M:%S')
                 student_dict['create_user'] = student.create_user
                 student_dict['have_picture'] = student.have_picture
+                student_dict['pic_url'] = "%s/%s.jpg" % (app.config.get("IMAGE_URL"), student_dict['student_id'])
                 seq += 1
                 student_info_list.append(student_dict)
             student_info_dict['student_info'] = student_info_list

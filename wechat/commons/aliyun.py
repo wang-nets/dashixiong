@@ -8,7 +8,7 @@ import traceback
 LOG = logging.getLogger("wechat")
 
 
-def upload_image_to_oss(path):
+def upload_image_to_oss(path, image_name):
     try:
         access_key_id = app.config.get("OSS_ACCESS_KEY_ID")
         access_key_secret = app.config.get("OSS_ACCESS_KEY_SECRET")
@@ -19,7 +19,6 @@ def upload_image_to_oss(path):
         bucket_name = app.config.get("OSS_BUCKET")
         bucket = oss2.Bucket(oss2.Auth(access_key_id, access_key_secret), endpoint, bucket_name)
 
-        image_path, _, image_name = str(path).rpartition('/')
         key = 'exam-score/%s' % image_name
         ret = bucket.put_object_from_file(key, path)
 
