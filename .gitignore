@@ -2,7 +2,4 @@
 *.xml
 *.log
 .idea/*
-<<<<<<< HEAD
-=======
 env-config/config.py
->>>>>>> f20ba00325c9034be080a7f9cb1ed2e38c6ceeec
