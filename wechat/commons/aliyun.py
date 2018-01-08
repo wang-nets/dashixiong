@@ -28,7 +28,7 @@ def upload_image_to_oss(path):
                                                                                      ret.request_id))
             raise InvalidOSSRequestException("Upload image error")
         LOG.info("Upload file to aliyun oss, status:%s, request_id:%s, path:%s" % (ret.status, ret.request_id, key))
-        # http://wechatpublic.oss-cn-beijing.aliyuncs.com/exam-score/pic.jpg
+
         pic_url = "%s/%s" % (app.config.get("IMAGE_URL"), image_name)
         return pic_url
     except Exception as e:

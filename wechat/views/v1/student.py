@@ -152,6 +152,38 @@ class PicPost(Resource):
 
     def post(self):
         try:
+            args = request.json
+            args_dict = dict()
+            args_dict['major_id'] = args.get('major_id', None)
+            args_dict['student_id'] = args.get('student_id', None)
+            args_dict['name'] = args.get('name', None)
+            args_dict['year'] = args.get('year', None)
+            args_dict['subject_1'] = args.get('subject_1', None)
+            args_dict['subject_2'] = args.get('subject_2', None)
+            args_dict['subject_3'] = args.get('subject_3', None)
+            args_dict['subject_4'] = args.get('subject_4', None)
+            args_dict['total'] = args.get('total', None)
+            args_dict['picture'] = args.get('picture', True)
+            LOG.info("Call url:/api/v1/major, method:POST, major_id:%s, student_id:%s, name:%s, "
+                     "year:%s, subject_1:%s, subject_2:%s, subject_3:%s, subject_4:%s, total:%s"
+                     "have_picture:%s" % (args_dict['major_id'],
+                                          args_dict['student_id'],
+                                          args_dict['name'],
+                                          args_dict['year'],
+                                          args_dict['subject_1'],
+                                          args_dict['subject_2'],
+                                          args_dict['subject_3'],
+                                          args_dict['subject_4'],
+                                          args_dict['total'],
+                                          args_dict['picture']))
+            if not (args_dict['major_id'] and args_dict['student_id'] and args_dict['name'] and
+                    args_dict['year'] and args_dict['subject_1'] and args_dict['subject_2'] and
+                    args_dict['subject_3'] and args_dict['subject_4'] and args_dict['total'] and
+                    args_dict['picture']):
+                InvalidRequestException("The argument is not null")
+            student = StudentController()
+            student.add_student_info(**args_dict)
+
             files = request.files
             image = files.get('file', None)
             local_name = save_image_to_local(image)
