@@ -15,7 +15,7 @@ class CollegeModel(object):
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
             if college_id:
-                college_info = session.query(Colleges).filter(Colleges.id == college_id).one()
+                college_info = session.query(Colleges).filter(Colleges.id == college_id).all()
             else:
                 college_info = session.query(Colleges).all()
 
@@ -52,6 +52,18 @@ class CollegeModel(object):
                 college_dict['enable'] = college.enable
                 college_info_list.append(college_dict)
             return college_info_list
+        except Exception:
+            LOG.info("Call get_college_info_by_id error:%s" % traceback.format_exc())
+            raise DBOperateException("Get college info error")
+
+    @staticmethod
+    def get_college_id_by_name(college_name):
+        engine = DbEngine.get_instance()
+        session = engine.get_session(autocommit=False, expire_on_commit=True)
+        try:
+
+            college_id = session.query(Colleges.id).filter(Colleges.college_name == college_name).scalar()
+            return college_id
         except Exception:
             LOG.info("Call get_college_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get college info error")

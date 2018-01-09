@@ -3,6 +3,11 @@ from wechat.models.models_base import Students
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
 from sqlalchemy import and_, or_, desc
+from sqlalchemy.orm.exc import NoResultFound
+from wechat.models.province_model import ProvinceModel
+from wechat.models.university_model import UniversityModel
+from wechat.models.college_mode import CollegeModel
+from wechat.models.major_model import MajorModel
 from wechat import app
 from wechat.commons.utils import handle_name
 import datetime
@@ -19,7 +24,7 @@ class StudentModel(object):
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
             if student_id:
-                student_info = session.query(Students).filter(Students.id == student_id).one()
+                student_info = session.query(Students).filter(Students.id == student_id).all()
             else:
                 student_info = session.query(Students).all()
             student_info_list = list()
@@ -49,13 +54,16 @@ class StudentModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
-            student_info_count = session.query(Students).filter(Students.student_id == student_id).count()
-            if student_info_count == 1:
-                return True
-            elif student_info_count == 0:
-                return False
-            else:
-                raise DBOperateException("Get student info error")
+            student_dict = dict()
+            student_info = session.query(Students).filter(Students.student_id == student_id).one()
+            major_id = student_info.major_id
+            student_dict['is_upload'] = True
+            student_dict['major_id'] = major_id
+            return student_dict
+        except NoResultFound:
+            student_dict['is_upload'] = False
+            student_dict['major_id'] = None
+            return student_dict
         except Exception:
             LOG.info("Call get_student_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get student info error")
@@ -72,6 +80,23 @@ class StudentModel(object):
                 student_info_dict['count'] = session.query(Students).filter(Students.major_id == major_id).\
                     count()
 
+                major = MajorModel()
+                student_info_dict['major_info'] = major.get_major_info_by_id(major_id=major_id)[0]
+                print "================="
+                print student_info_dict['major_info']
+                college = CollegeModel()
+                student_info_dict['college_info'] = college.\
+                    get_college_info_by_id(college_id=student_info_dict['major_info']['college_id'])[0]
+                print "================="
+                print student_info_dict['college_info']
+                university = UniversityModel()
+                student_info_dict['university_info'] = university.\
+                    get_university_info_by_id(university_id=student_info_dict['college_info']['university_id'])[0]
+                print "================="
+                print student_info_dict['university_info']
+                province = ProvinceModel()
+                student_info_dict['province_info'] = province.\
+                    get_province_info_by_id(province_id=student_info_dict['university_info']['province_id'])[0]
             else:
                 student_info = session.query(Students).order_by(desc(Students.total)).all()
             student_info_list = list()

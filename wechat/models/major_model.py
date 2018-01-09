@@ -14,11 +14,11 @@ class MajorModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
+            major_info_list = list()
             if major_id:
-                major_info = session.query(Majors).filter(Majors.id == major_id).one()
+                major_info = session.query(Majors).filter(Majors.id == major_id).all()
             else:
                 major_info = session.query(Majors).all()
-                major_info_list = list()
             for major in major_info:
                 major_dict = dict()
                 major_dict['id'] = major.id
@@ -29,10 +29,10 @@ class MajorModel(object):
                 major_dict['enrollment'] = major.enrollment
                 major_dict['exempt'] = major.exempt
                 major_dict['enable'] = major.enable
-            major_info_list.append(major_info)
+            major_info_list.append(major_dict)
             return major_info_list
         except Exception:
-            LOG.info("Call get_major_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_major_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get major info error")
 
     @staticmethod
@@ -58,7 +58,7 @@ class MajorModel(object):
                 major_info_list.append(major_dict)
             return major_info_list
         except Exception:
-            LOG.info("Call get_major_info_by_college_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_major_info_by_college_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get major info error")
 
     @staticmethod
@@ -81,7 +81,7 @@ class MajorModel(object):
         except DBOperateException:
             raise
         except Exception:
-            LOG.info("Call add_major_info error:%s" % traceback.format_exc())
+            LOG.error("Call add_major_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add major info error")
 
     @staticmethod
@@ -92,7 +92,7 @@ class MajorModel(object):
             session.query(Majors).filter(Majors.id == major_id).delete()
             session.commit()
         except Exception:
-            LOG.info("Call delete_major_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call delete_major_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete major info error")
 
     @staticmethod
@@ -110,5 +110,5 @@ class MajorModel(object):
             major_info.enable = kwargs['enable']
             session.commit()
         except Exception:
-            LOG.info("Call update_major_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call update_major_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update major info error")

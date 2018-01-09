@@ -39,12 +39,35 @@ class UniversityModel(object):
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
             if university_id:
-                university_info = session.query(Universities).filter(Universities.id == university_id).one()
+                university_info = session.query(Universities).filter(Universities.id == university_id).all()
             else:
                 university_info = session.query(Universities).all()
-            return university_info
+            university_info_list = list()
+            for university in university_info:
+                university_dict = dict()
+                university_dict['id'] = university.id
+                university_dict['university_id'] = university.university_id
+                university_dict['province_id'] = university.province_id
+                university_dict['university_name'] = university.university_name
+                university_dict['enable'] = university.enable
+                university_info_list.append(university_dict)
+            return university_info_list
         except Exception:
             LOG.info("Call get_university_info_by_id error:%s" % traceback.format_exc())
+            raise DBOperateException("Get university info error")
+
+    @staticmethod
+    def get_university_id_by_name(university_name):
+        engine = DbEngine.get_instance()
+        session = engine.get_session(autocommit=False, expire_on_commit=True)
+        try:
+
+            university_id = session.query(Universities.id).\
+                filter(Universities.university_name == university_name).scalar()
+
+            return university_id
+        except Exception:
+            LOG.info("Call get_university_id_by_name error:%s" % traceback.format_exc())
             raise DBOperateException("Get university info error")
 
     @staticmethod
@@ -62,6 +85,7 @@ class UniversityModel(object):
                                           enable=True)
             session.add(university_obj)
             session.commit()
+            return university_obj.id
         except DBOperateException:
             raise
         except Exception:

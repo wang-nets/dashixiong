@@ -97,8 +97,8 @@ class StudentUploadGet(Resource):
         LOG.info("Call url:/api/v1/student, method:GET, student_id:%s" % student_id)
         try:
             student = StudentController()
-            ret = student.get_student_info_by_student_id(student_id=student_id)
-            self.ret_dict['data'] = {"is_upload": ret}
+            ret_dict = student.get_student_info_by_student_id(student_id=student_id)
+            self.ret_dict['data'] = ret_dict
             self.ret_dict['success'] = "true"
             print self.ret_dict
             return self.ret_dict, 200
