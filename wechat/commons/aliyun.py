@@ -19,7 +19,7 @@ def upload_image_to_oss(path, image_name):
         bucket_name = app.config.get("OSS_BUCKET")
         bucket = oss2.Bucket(oss2.Auth(access_key_id, access_key_secret), endpoint, bucket_name)
 
-        key = 'exam-score/%s' % image_name
+        key = 'exam-score/%s.jpg' % image_name
         ret = bucket.put_object_from_file(key, path)
 
         if ret.status != 200:

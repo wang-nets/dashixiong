@@ -41,6 +41,12 @@ def drop_db():
         MODEL_BASE.metadata.drop_all(engine)
 
 
+@manager.option('-f', '--file', help='import file name')
+def import_db(import_file):
+    """import data to database"""
+    print import_file
+
+
 class APIServer(Command):
     def __init__(self, host='0.0.0.0', port=app.config.get('API_PORT'), workers=12):
         self.address = "{}:{}".format(host, port)
