@@ -33,6 +33,20 @@ class ProvinceModel(object):
             raise DBOperateException("Get province info error")
 
     @staticmethod
+    def get_province_id_by_name(province_name):
+        engine = DbEngine.get_instance()
+        session = engine.get_session(autocommit=False, expire_on_commit=True)
+        try:
+            province_id = session.query(Provinces.id).filter(Provinces.province_name == province_name).scalar()
+
+            LOG.info("Call get_province_id_by_name province_name:%s, province_id:%s" % (province_name,
+                                                                                        province_id))
+            return province_id
+        except Exception:
+            LOG.info("Call get_province_id_by_name error:%s" % traceback.format_exc())
+            raise DBOperateException("Get province info error")
+
+    @staticmethod
     def add_province_info(**kwargs):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
@@ -45,6 +59,7 @@ class ProvinceModel(object):
                                      enable=True)
             session.add(province_obj)
             session.commit()
+            return province_obj.id
         except DBOperateException:
             raise
         except Exception:

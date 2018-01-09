@@ -2,6 +2,7 @@
 from flask_script import Manager, Command, Option, prompt_bool
 from wechat import app
 from wechat.models import DbEngine, MODEL_BASE
+from wechat.commons.utils import import_data
 
 try:
     from gunicorn.app.base import BaseApplication
@@ -41,10 +42,10 @@ def drop_db():
         MODEL_BASE.metadata.drop_all(engine)
 
 
-@manager.option('-f', '--file', help='import file name')
+@manager.option('-f', '--import_file', help='import file name')
 def import_db(import_file):
     """import data to database"""
-    print import_file
+    import_data(import_file)
 
 
 class APIServer(Command):
