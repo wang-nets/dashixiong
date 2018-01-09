@@ -84,6 +84,30 @@ class StudentGet(Resource):
             return self.ret_dict, 500
 
 
+class StudentUploadGet(Resource):
+    def __init__(self):
+        self.req_parse = reqparse.RequestParser()
+        self.ret_dict = {
+            'success': 'false',
+            'data': '',
+            'msg': ''
+        }
+
+    def get(self, student_id):
+        LOG.info("Call url:/api/v1/student, method:GET, student_id:%s" % student_id)
+        try:
+            student = StudentController()
+            ret = student.get_student_info_by_student_id(student_id=student_id)
+            self.ret_dict['data'] = {"is_upload": ret}
+            self.ret_dict['success'] = "true"
+            print self.ret_dict
+            return self.ret_dict, 200
+        except Exception as e:
+            LOG.error("Call url:/api/v1/student, method:GET, error:%s" % traceback.format_exc())
+            self.ret_dict['msg'] = e.message
+            return self.ret_dict, 500
+
+
 class StudentPutDelete(Resource):
     def __init__(self):
         self.req_parse = reqparse.RequestParser()

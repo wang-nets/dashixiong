@@ -45,6 +45,22 @@ class StudentModel(object):
             raise DBOperateException("Get student info error")
 
     @staticmethod
+    def get_student_info_by_student_id(student_id):
+        engine = DbEngine.get_instance()
+        session = engine.get_session(autocommit=False, expire_on_commit=True)
+        try:
+            student_info_count = session.query(Students).filter(Students.student_id == student_id).count()
+            if student_info_count == 1:
+                return True
+            elif student_info_count == 0:
+                return False
+            else:
+                raise DBOperateException("Get student info error")
+        except Exception:
+            LOG.info("Call get_student_info_by_id error:%s" % traceback.format_exc())
+            raise DBOperateException("Get student info error")
+
+    @staticmethod
     def get_student_info_by_major_id(major_id=None, student_id=None):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)

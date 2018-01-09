@@ -33,19 +33,19 @@ LOG_CFG = {
 }
 
 
-SQLALCHEMY_DATABASE_URI = ''
+SQLALCHEMY_DATABASE_URI = 'mysql://root:KingMaster@localhost:3306/dashixiong?charset=utf8'
 SQLALCHEMY_POOL_SIZE = 50
 SQLALCHEMY_MAX_OVERFLOW = 15
 
 API_PORT = 8080
 
 
-OSS_ACCESS_KEY_ID = ""
-OSS_ACCESS_KEY_SECRET = ""
-OSS_BUCKET = ''
+OSS_ACCESS_KEY_ID = "LTAIurzjmlt3nFud"
+OSS_ACCESS_KEY_SECRET = "v3kwc4oTNx4Dk5YpCNaERv8WfFMN7K"
+OSS_BUCKET = 'wechatpublic'
 OSS_ENDPOINT = 'oss-cn-beijing.aliyuncs.com'
 OSS_INTER_ENDPOINT = "oss-cn-beijing-internal.aliyuncs.com"
-IMAGE_URL = ""
+IMAGE_URL = "http://wechatpublic.oss-cn-beijing.aliyuncs.com/exam-score"
 
 # INTERNAL = True
 INTERNAL = False

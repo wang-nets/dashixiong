@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import csv
 
 
 def handle_name(student_name):
@@ -8,3 +9,9 @@ def handle_name(student_name):
     for _ in student_name[1:]:
         handled_name += "*"
     return handled_name
+
+
+def import_data(csv_file):
+    reader = csv.DictReader(open("tpl.csv", "rU"))
+    for row in reader:
+        row['province_name'].decode('gbk').encode('utf-8')
