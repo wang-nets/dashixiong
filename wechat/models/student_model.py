@@ -82,18 +82,12 @@ class StudentModel(object):
 
                 major = MajorModel()
                 student_info_dict['major_info'] = major.get_major_info_by_id(major_id=major_id)[0]
-                print "================="
-                print student_info_dict['major_info']
                 college = CollegeModel()
                 student_info_dict['college_info'] = college.\
                     get_college_info_by_id(college_id=student_info_dict['major_info']['college_id'])[0]
-                print "================="
-                print student_info_dict['college_info']
                 university = UniversityModel()
                 student_info_dict['university_info'] = university.\
                     get_university_info_by_id(university_id=student_info_dict['college_info']['university_id'])[0]
-                print "================="
-                print student_info_dict['university_info']
                 province = ProvinceModel()
                 student_info_dict['province_info'] = province.\
                     get_province_info_by_id(province_id=student_info_dict['university_info']['province_id'])[0]
