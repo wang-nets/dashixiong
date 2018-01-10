@@ -2,6 +2,8 @@
 from wechat.models.models_base import Majors
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import and_
 import traceback
 import logging
 
@@ -36,6 +38,18 @@ class MajorModel(object):
             raise DBOperateException("Get major info error")
 
     @staticmethod
+    def get_major_id_by_college_id(college_id, major_id):
+        engine = DbEngine.get_instance()
+        session = engine.get_session(autocommit=False, expire_on_commit=True)
+        try:
+            m_id = session.query(Majors.id).\
+                filter(and_(Majors.college_id == college_id, Majors.major_id == major_id)).scalar()
+            return m_id
+        except Exception:
+            LOG.error("Call get_major_id_by_college_id error:%s" % traceback.format_exc())
+            raise DBOperateException("Get major info error")
+
+    @staticmethod
     def get_major_info_by_college_id(college_id=None):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
@@ -66,7 +80,9 @@ class MajorModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
-            major_count = session.query(Majors).filter(Majors.major_id == kwargs["major_id"]).count()
+            major_count = session.query(Majors).\
+                filter(and_(Majors.college_id == kwargs["college_id"],
+                            Majors.major_id == kwargs["major_id"])).count()
             if major_count != 0:
                 raise DBOperateException("Duplicated information input, please check")
             major_obj = Majors(major_id=kwargs["major_id"],
@@ -78,6 +94,7 @@ class MajorModel(object):
                                enable=True)
             session.add(major_obj)
             session.commit()
+            return major_obj.id
         except DBOperateException:
             raise
         except Exception:

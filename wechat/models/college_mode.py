@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from wechat.models.models_base import Colleges
 from wechat.models import DbEngine
+from sqlalchemy import and_
 from wechat.exceptions import DBOperateException
 import traceback
 import logging
@@ -30,7 +31,7 @@ class CollegeModel(object):
                 college_info_list.append(college_dict)
             return college_info_list
         except Exception:
-            LOG.info("Call get_college_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_college_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get college info error")
 
     @staticmethod
@@ -53,19 +54,21 @@ class CollegeModel(object):
                 college_info_list.append(college_dict)
             return college_info_list
         except Exception:
-            LOG.info("Call get_college_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_college_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get college info error")
 
     @staticmethod
-    def get_college_id_by_name(college_name):
+    def get_college_id_by_name(university_id, college_name):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
 
-            college_id = session.query(Colleges.id).filter(Colleges.college_name == college_name).scalar()
+            college_id = session.query(Colleges.id).\
+                filter(and_(Colleges.university_id == university_id,
+                            Colleges.college_name == college_name)).scalar()
             return college_id
         except Exception:
-            LOG.info("Call get_college_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_college_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get college info error")
 
     @staticmethod
@@ -73,7 +76,9 @@ class CollegeModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
-            college_count = session.query(Colleges).filter(Colleges.college_id == kwargs["college_id"]).count()
+            college_count = session.query(Colleges).\
+                filter(and_(Colleges.university_id == kwargs["university_id"],
+                            Colleges.college_name == kwargs["college_name"])).count()
             if college_count != 0:
                 raise DBOperateException("Duplicated information input, please check")
             college_obj = Colleges(college_id=kwargs["college_id"],
@@ -82,10 +87,11 @@ class CollegeModel(object):
                                    enable=True)
             session.add(college_obj)
             session.commit()
+            return college_obj.id
         except DBOperateException:
             raise
         except Exception:
-            LOG.info("Call add_college_info error:%s" % traceback.format_exc())
+            LOG.error("Call add_college_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add college info error")
 
     @staticmethod
@@ -96,7 +102,7 @@ class CollegeModel(object):
             session.query(Colleges).filter(Colleges.id == college_id).delete()
             session.commit()
         except Exception:
-            LOG.info("Call delete_college_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call delete_college_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete college info error")
 
     @staticmethod
@@ -111,5 +117,5 @@ class CollegeModel(object):
             college_info.enable = kwargs['enable']
             session.commit()
         except Exception:
-            LOG.info("Call update_college_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call update_college_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update college info error")

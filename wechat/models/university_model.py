@@ -30,7 +30,7 @@ class UniversityModel(object):
             LOG.info("Call get_university_info_by_province_id university_list:%s " % university_info_list)
             return university_info_list
         except Exception:
-            LOG.info("Call get_university_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_university_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get university info error")
 
     @staticmethod
@@ -53,7 +53,7 @@ class UniversityModel(object):
                 university_info_list.append(university_dict)
             return university_info_list
         except Exception:
-            LOG.info("Call get_university_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_university_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get university info error")
 
     @staticmethod
@@ -67,7 +67,7 @@ class UniversityModel(object):
 
             return university_id
         except Exception:
-            LOG.info("Call get_university_id_by_name error:%s" % traceback.format_exc())
+            LOG.error("Call get_university_id_by_name error:%s" % traceback.format_exc())
             raise DBOperateException("Get university info error")
 
     @staticmethod
@@ -76,7 +76,7 @@ class UniversityModel(object):
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
             university_count = session.query(Universities).\
-                filter(Universities.university_id == kwargs["university_id"]).count()
+                filter(Universities.university_name == kwargs["university_name"]).count()
             if university_count != 0:
                 raise DBOperateException("Duplicated information input, please check")
             university_obj = Universities(province_id=kwargs["province_id"],
@@ -89,7 +89,7 @@ class UniversityModel(object):
         except DBOperateException:
             raise
         except Exception:
-            LOG.info("Call add_university_info error:%s" % traceback.format_exc())
+            LOG.error("Call add_university_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add university info error")
 
     @staticmethod
@@ -100,7 +100,7 @@ class UniversityModel(object):
             session.query(Universities).filter(Universities.id == university_id).delete()
             session.commit()
         except Exception:
-            LOG.info("Call delete_university_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call delete_university_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete university info error")
 
     @staticmethod
@@ -114,5 +114,5 @@ class UniversityModel(object):
             university_info.enable = kwargs['enable']
             session.commit()
         except Exception:
-            LOG.info("Call update_university_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call update_university_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update university info error")

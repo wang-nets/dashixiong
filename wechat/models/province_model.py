@@ -29,7 +29,7 @@ class ProvinceModel(object):
                                                                                         province_id))
             return province_info_list
         except Exception:
-            LOG.info("Call get_province_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get province info error")
 
     @staticmethod
@@ -43,7 +43,7 @@ class ProvinceModel(object):
                                                                                         province_id))
             return province_id
         except Exception:
-            LOG.info("Call get_province_id_by_name error:%s" % traceback.format_exc())
+            LOG.error("Call get_province_id_by_name error:%s" % traceback.format_exc())
             raise DBOperateException("Get province info error")
 
     @staticmethod
@@ -63,7 +63,7 @@ class ProvinceModel(object):
         except DBOperateException:
             raise
         except Exception:
-            LOG.info("Call get_province_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Add province info error")
 
     @staticmethod
@@ -74,7 +74,7 @@ class ProvinceModel(object):
             session.query(Provinces).filter(Provinces.id == province_id).delete()
             session.commit()
         except Exception:
-            LOG.info("Call get_province_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete province info error")
 
     @staticmethod
@@ -87,5 +87,5 @@ class ProvinceModel(object):
             province_info.enable = kwargs['enable']
             session.commit()
         except Exception:
-            LOG.info("Call get_province_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update province info error")
