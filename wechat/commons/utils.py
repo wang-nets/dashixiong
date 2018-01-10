@@ -44,15 +44,25 @@ def import_data(csv_file):
                 info_dict['university_id'] = university_model.\
                     get_university_id_by_name(university_name=info_dict['university_name'])
                 if not info_dict['university_id']:
+                    """university_id为空，数据库没有university相关数据"""
                     info_dict['university_id'] = "000000"
+                    # info_dict['university_id']数据库主键
                     info_dict['university_id'] = university_model.add_university_info(**info_dict)
                 college_model = CollegeModel()
-                info_dict['college_id'] = college_model.get_college_id_by_name(college_name=info_dict['college_name'])
+                info_dict['college_id'] = college_model.get_college_id_by_name(university_id=info_dict['university_id'],
+                                                                               college_name=info_dict['college_name'])
                 if not info_dict['college_id']:
+                    """college_id为空，数据库没有college相关数据"""
                     info_dict['college_id'] = "000000"
                     info_dict['college_id'] = college_model.add_college_info(**info_dict)
-
+                major_model = MajorModel()
+                m_id = major_model.\
+                    get_major_id_by_college_id(college_id=info_dict['college_id'], major_id=info_dict['major_id'])
+                if not m_id:
+                    major_model.add_major_info(**info_dict)
+                LOG.info("Import data successfully, info_dict:%s" % info_dict)
             except DBOperateException:
+                LOG.error("Import data info_dict %s, error:%s" % (info_dict, traceback.format_exc()))
                 continue
     except Exception as e:
         LOG.error("Import csv data to database error:%s" % traceback.format_exc())

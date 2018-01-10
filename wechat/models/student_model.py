@@ -46,7 +46,7 @@ class StudentModel(object):
                 student_info_list.append(student_dict)
             return student_info_list
         except Exception:
-            LOG.info("Call get_student_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_student_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get student info error")
 
     @staticmethod
@@ -62,10 +62,10 @@ class StudentModel(object):
             return student_dict
         except NoResultFound:
             student_dict['is_upload'] = False
-            student_dict['major_id'] = None
+            student_dict['major_id'] = 0
             return student_dict
         except Exception:
-            LOG.info("Call get_student_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_student_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get student info error")
 
     @staticmethod
@@ -119,7 +119,7 @@ class StudentModel(object):
             student_info_dict['student_info'] = student_info_list
             return student_info_dict
         except Exception:
-            LOG.info("Call get_student_info_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call get_student_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Get student info error")
 
     @staticmethod
@@ -144,10 +144,11 @@ class StudentModel(object):
                                    have_picture=True)
             session.add(student_obj)
             session.commit()
+            return student_obj.id
         except DBOperateException:
             raise
         except Exception:
-            LOG.info("Call add_student_info error:%s" % traceback.format_exc())
+            LOG.error("Call add_student_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add student info error")
 
     @staticmethod
@@ -158,7 +159,7 @@ class StudentModel(object):
             session.query(Students).filter(Students.student_id == student_id).delete()
             session.commit()
         except Exception:
-            LOG.info("Call delete_student_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call delete_student_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete student info error")
 
     @staticmethod
@@ -180,5 +181,5 @@ class StudentModel(object):
             student_info.have_picture = kwargs['have_picture']
             session.commit()
         except Exception:
-            LOG.info("Call update_student_by_id error:%s" % traceback.format_exc())
+            LOG.error("Call update_student_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update student info error")
