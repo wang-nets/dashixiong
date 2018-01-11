@@ -188,7 +188,7 @@ class PicPost(Resource):
             args_dict['subject_4'] = args.get('subject_4', None)
             args_dict['total'] = args.get('total', None)
             args_dict['picture'] = args.get('picture', True)
-            LOG.info("Call url:/api/v1/major, method:POST, major_id:%s, student_id:%s, name:%s, "
+            LOG.info("Call url:/api/v1/picture, method:POST, major_id:%s, student_id:%s, name:%s, "
                      "year:%s, subject_1:%s, subject_2:%s, subject_3:%s, subject_4:%s, total:%s"
                      "have_picture:%s" % (args_dict['major_id'],
                                           args_dict['student_id'],
