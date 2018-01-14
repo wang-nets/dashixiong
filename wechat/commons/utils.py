@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import csv
+from wechat.exceptions import InvalidRequestException
 from wechat.exceptions import DBOperateException
 from wechat.models.province_model import ProvinceModel
 from wechat.models.university_model import UniversityModel
 from wechat.models.college_mode import CollegeModel
 from wechat.models.major_model import MajorModel
+from wechat import app
 import traceback
+import requests
 import logging
 
 LOG = logging.getLogger("wechat")
@@ -66,3 +69,26 @@ def import_data(csv_file):
                 continue
     except Exception as e:
         LOG.error("Import csv data to database error:%s" % traceback.format_exc())
+
+
+def get_wx_openid(res_code):
+    try:
+        wx_url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&grant_type=%s&js_code=%s" % (
+            app.config.get("APP_ID"),
+            app.config.get("SECRET"),
+            app.config.get("GRANT_TYPE"),
+            res_code
+        )
+        resp = requests.get(wx_url)
+        if resp.status_code != 200:
+            LOG.error("Call https://api.weixin.qq.com failed, status_code:%s, req:%s" % (resp.status_code,
+                                                                                         resp.text))
+            InvalidRequestException("Request openid failed")
+        ret = resp.json()
+        if "openid" not in ret:
+            LOG.error("Not openid in response, resp:%s" % ret)
+            raise InvalidRequestException("Request openid failed")
+        return ret['openid']
+    except Exception as e:
+        LOG.error("Request openid failed, please check:%s" % traceback.format_exc())
+        raise

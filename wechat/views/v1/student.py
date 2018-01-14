@@ -5,6 +5,7 @@ import datetime
 import traceback
 from wechat.controllers.student import StudentController
 from wechat.commons.aliyun import save_image_to_local, upload_image_to_oss
+from wechat.commons.utils import get_wx_openid
 from flask import request
 from wechat.exceptions import InvalidRequestException
 LOG = logging.getLogger("wechat")
@@ -220,3 +221,24 @@ class PicPost(Resource):
             self.ret_dict['msg'] = e.message
             return self.ret_dict, 500
 
+
+class WechatClass(Resource):
+    def __init__(self):
+        self.req_parse = reqparse.RequestParser()
+        self.ret_dict = {
+            'success': 'false',
+            'data': '',
+            'msg': ''
+        }
+
+    def get(self, res_code):
+        LOG.info("Call url:/api/v1/openapi, method:GET, res_code:%s" % res_code)
+        try:
+            ret = get_wx_openid(res_code)
+            self.ret_dict['data'] = ret
+            self.ret_dict['success'] = "true"
+            return self.ret_dict, 200
+        except Exception as e:
+            LOG.error("Call url:/api/v1/openapi, method:GET, error:%s" % traceback.format_exc())
+            self.ret_dict['msg'] = e.message
+            return self.ret_dict, 500

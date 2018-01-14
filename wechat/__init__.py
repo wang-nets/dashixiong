@@ -66,6 +66,9 @@ api.add_resource(StudentUploadGet, '/api/v1/student/<string:student_id>')
 from wechat.views.v1.student import PicPost
 api.add_resource(PicPost, '/api/v1/picture')
 
+from wechat.views.v1.student import WechatClass
+api.add_resource(WechatClass, '/api/v1/openid/<string:res_code>')
+
 db = SQLAlchemy(app)
 # Logging
 
