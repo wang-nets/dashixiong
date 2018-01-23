@@ -28,14 +28,18 @@ def import_data(csv_file):
         reader = csv.DictReader(open(csv_file, "rU"))
         for row in reader:
             info_dict = dict()
-            info_dict['province_name'] = row['province_name'].decode('gbk').encode('utf-8')
-            info_dict['university_name'] = row['university_name'].decode('gbk').encode('utf-8')
-            info_dict['college_name'] = row['college_name'].decode('gbk').encode('utf-8')
-            info_dict['major_id'] = row['major_id'].decode('gbk').encode('utf-8')
-            info_dict['major_name'] = row['major_name'].decode('gbk').encode('utf-8')
-            info_dict['year'] = row['year'].decode('gbk').encode('utf-8')
-            info_dict['enrollment'] = row['enrollment'].decode('gbk').encode('utf-8')
-            info_dict['exempt'] = row['exempt'].decode('gbk').encode('utf-8')
+            info_dict['province_name'] = row['province_name'].replace("\n", "")
+            info_dict['university_name'] = row['university_name'].replace("\n", "")
+            info_dict['college_name'] = row['college_name'].replace("\n", "")
+            info_dict['major_id'] = row['major_id'].replace("\n", "")
+            info_dict['major_name'] = row['major_name'].replace("\n", "")
+            info_dict['year'] = row['year'].replace("\n", "")
+            info_dict['enrollment'] = row['enrollment'].replace("\n", "")
+            info_dict['exempt'] = row['exempt'].replace("\n", "")
+            if info_dict['enrollment'] == "":
+                info_dict['enrollment'] = 0
+            if info_dict['exempt'] == "":
+                info_dict['exempt'] = 0
             try:
                 province_model = ProvinceModel()
                 info_dict['province_id'] = province_model.\
