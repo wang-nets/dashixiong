@@ -9,6 +9,7 @@ from wechat.models.major_model import MajorModel
 from wechat import app
 import traceback
 import requests
+import json
 import logging
 
 LOG = logging.getLogger("wechat")
@@ -67,9 +68,9 @@ def import_data(csv_file):
                     get_major_id_by_college_id(college_id=info_dict['college_id'], major_id=info_dict['major_id'])
                 if not m_id:
                     major_model.add_major_info(**info_dict)
-                LOG.info("Import data successfully, info_dict:%s" % info_dict)
+                LOG.info("Import data successfully")
             except DBOperateException:
-                LOG.error("Import data info_dict %s, error:%s" % (info_dict, traceback.format_exc()))
+                LOG.error("Import data error:%s, info_dict:%s" % (traceback.format_exc(), json.dumps(info_dict)))
                 continue
     except Exception as e:
         LOG.error("Import csv data to database error:%s" % traceback.format_exc())
