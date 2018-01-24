@@ -39,8 +39,7 @@ class ProvinceModel(object):
         try:
             province_id = session.query(Provinces.id).filter(Provinces.province_name == province_name).scalar()
 
-            LOG.info("Call get_province_id_by_name province_name:%s, province_id:%s" % (province_name,
-                                                                                        province_id))
+            LOG.info("Call get_province_id_by_name province_id:%s" % province_id    )
             return province_id
         except Exception:
             LOG.error("Call get_province_id_by_name error:%s" % traceback.format_exc())
