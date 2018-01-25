@@ -58,8 +58,8 @@ class Majors(MODEL_BASE):
     college_id = Column(Integer, ForeignKey("colleges.id"))
     major_id = Column(VARCHAR(64), index=True, nullable=False)
     year = Column(Integer, index=True, nullable=False)
-    enrollment = Column(Integer, nullable=False)
-    exempt = Column(Integer, nullable=False)
+    enrollment = Column(VARCHAR(64), nullable=False)
+    exempt = Column(VARCHAR(64), nullable=False)
     enable = Column(Boolean, nullable=False)
     student = relationship("Students")
 

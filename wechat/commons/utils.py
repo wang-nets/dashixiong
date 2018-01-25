@@ -38,10 +38,15 @@ def import_data(csv_file):
             info_dict['enrollment'] = row['enrollment'].replace("\n", "")
             info_dict['exempt'] = row['exempt'].replace("\n", "")
             if info_dict['enrollment'] == "":
-                info_dict['enrollment'] = 0
+                info_dict['enrollment'] = "无数据"
             if info_dict['exempt'] == "":
-                info_dict['exempt'] = 0
+                info_dict['exempt'] = "无数据"
             try:
+                if info_dict['province_name'] == "" or info_dict['university_name'] == "" or \
+                    info_dict['college_name'] == "" or info_dict['major_id'] == "" or \
+                        info_dict['major_name'] == "" or info_dict['year'] == "":
+                    LOG.warning("Some information missing, passing data import")
+                    continue
                 province_model = ProvinceModel()
                 info_dict['province_id'] = province_model.\
                     get_province_id_by_name(province_name=info_dict['province_name'])
@@ -68,6 +73,8 @@ def import_data(csv_file):
                     get_major_id_by_college_id(college_id=info_dict['college_id'], major_id=info_dict['major_id'])
                 if not m_id:
                     major_model.add_major_info(**info_dict)
+                else:
+                    LOG.warning("This major is repeated, please check.")
                 LOG.info("Import data successfully")
             except DBOperateException:
                 LOG.error("Import data error:%s, info_dict:%s" % (traceback.format_exc(), json.dumps(info_dict)))
