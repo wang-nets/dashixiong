@@ -37,9 +37,8 @@ def import_data(csv_file):
             info_dict['year'] = row['year'].replace("\n", "")
             info_dict['enrollment'] = row['enrollment'].replace("\n", "")
             info_dict['exempt'] = row['exempt'].replace("\n", "")
-            if info_dict['enrollment'] == "":
+            if info_dict['enrollment'] == "" and info_dict['exempt'] == "":
                 info_dict['enrollment'] = "无数据"
-            if info_dict['exempt'] == "":
                 info_dict['exempt'] = "无数据"
             try:
                 if info_dict['province_name'] == "" or info_dict['university_name'] == "" or \
