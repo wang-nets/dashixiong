@@ -23,7 +23,7 @@ class Universities(MODEL_BASE):
     __tablename__ = "universities"
     id = Column(Integer, primary_key=True, autoincrement=True)
     province_id = Column(Integer, ForeignKey("provinces.id"))
-    university_id = Column(VARCHAR(64), index=True, nullable=False, unique=True)
+    university_id = Column(VARCHAR(64), index=True, nullable=False)
     university_name = Column(VARCHAR(128), index=True, nullable=False, unique=True)
     enable = Column(Boolean, nullable=False)
     major = relationship("Colleges")
