@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from wechat.models.models_base import Majors
+from wechat.models.models_base import Majors, Students
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
 from sqlalchemy.orm.exc import NoResultFound
@@ -96,8 +96,10 @@ class MajorModel(object):
             session.commit()
             return major_obj.id
         except DBOperateException:
+            session.rollback()
             raise
         except Exception:
+            session.rollback()
             LOG.error("Call add_major_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add major info error")
 
@@ -106,9 +108,14 @@ class MajorModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
+            """
+            删除报考该专业的学生
+            """
+            session.query(Students).filter(Students.major_id == major_id).delete()
             session.query(Majors).filter(Majors.id == major_id).delete()
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call delete_major_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete major info error")
 
@@ -127,5 +134,6 @@ class MajorModel(object):
             major_info.enable = kwargs['enable']
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call update_major_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update major info error")

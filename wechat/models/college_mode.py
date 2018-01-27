@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from wechat.models.models_base import Colleges
+from wechat.models.models_base import Colleges, Majors
+from wechat.models.major_model import MajorModel
 from wechat.models import DbEngine
 from sqlalchemy import and_
 from wechat.exceptions import DBOperateException
@@ -89,8 +90,10 @@ class CollegeModel(object):
             session.commit()
             return college_obj.id
         except DBOperateException:
+            session.rollback()
             raise
         except Exception:
+            session.rollback()
             LOG.error("Call add_college_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add college info error")
 
@@ -99,9 +102,17 @@ class CollegeModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
+            """
+            删除学院之前要删除学院内所有专业
+            """
+            major_ids = session.query(Majors.id).filter(Majors.college_id == college_id).all()
+            major_object = MajorModel()
+            for m_id in major_ids:
+                major_object.delete_major_by_id(major_id=m_id)
             session.query(Colleges).filter(Colleges.id == college_id).delete()
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call delete_college_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete college info error")
 
@@ -117,5 +128,6 @@ class CollegeModel(object):
             college_info.enable = kwargs['enable']
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call update_college_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update college info error")

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from wechat.models.models_base import Universities
+from wechat.models.models_base import Universities, Colleges
+from wechat.models.college_mode import CollegeModel
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
 import traceback
@@ -87,8 +88,10 @@ class UniversityModel(object):
             session.commit()
             return university_obj.id
         except DBOperateException:
+            session.rollback()
             raise
         except Exception:
+            session.rollback()
             LOG.error("Call add_university_info error:%s" % traceback.format_exc())
             raise DBOperateException("Add university info error")
 
@@ -97,9 +100,17 @@ class UniversityModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
+            """
+            删除学校之前先删除学校内所有学院
+            """
+            college_ids = session.query(Colleges.id).filter(Colleges.university_id == university_id).all()
+            college_object = CollegeModel()
+            for c_id in college_ids:
+                college_object.delete_college_by_id(college_id=c_id)
             session.query(Universities).filter(Universities.id == university_id).delete()
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call delete_university_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete university info error")
 
@@ -114,5 +125,6 @@ class UniversityModel(object):
             university_info.enable = kwargs['enable']
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call update_university_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update university info error")

@@ -73,7 +73,7 @@ def import_data(csv_file):
                 if not m_id:
                     major_model.add_major_info(**info_dict)
                 else:
-                    LOG.warning("This major is repeated, please check.")
+                    LOG.warning("This major is repeated, please check, major_id:%s" % m_id)
                 LOG.info("Import data successfully")
             except DBOperateException:
                 LOG.error("Import data error:%s, info_dict:%s" % (traceback.format_exc(), json.dumps(info_dict)))

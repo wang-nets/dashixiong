@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from wechat.models.models_base import Provinces
+from wechat.models.models_base import Provinces, Universities
+from wechat.models.university_model import UniversityModel
 from wechat.models import DbEngine
 from wechat.exceptions import DBOperateException
 import traceback
@@ -60,8 +61,10 @@ class ProvinceModel(object):
             session.commit()
             return province_obj.id
         except DBOperateException:
+            session.rollback()
             raise
         except Exception:
+            session.rollback()
             LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Add province info error")
 
@@ -70,9 +73,17 @@ class ProvinceModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
+            """
+            删除省份前先删除省份内相关学校
+            """
+            university_ids = session.query(Universities.id).filter(Universities.province_id == province_id).all()
+            university_object = UniversityModel()
+            for u_id in university_ids:
+                university_object.delete_university_by_id(university_id=u_id)
             session.query(Provinces).filter(Provinces.id == province_id).delete()
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete province info error")
 
@@ -86,5 +97,6 @@ class ProvinceModel(object):
             province_info.enable = kwargs['enable']
             session.commit()
         except Exception:
+            session.rollback()
             LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Update province info error")
