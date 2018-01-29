@@ -5,6 +5,7 @@ import stat
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api
 import sys
+from flask_cors import CORS
 from logging import Formatter, handlers
 from logging.handlers import RotatingFileHandler
 from logging import StreamHandler
@@ -12,6 +13,8 @@ from logging.config import dictConfig
 from logging import DEBUG
 
 app = Flask(__name__)
+
+CORS(app)
 
 # If DASHIXIONG_SETTINGS is set, then use that.
 # Otherwise, use env-config/config.py
