@@ -13,7 +13,7 @@ class Provinces(MODEL_BASE):
     id = Column(Integer, primary_key=True, autoincrement=True)
     province_name = Column(VARCHAR(64), index=True, nullable=False, unique=True)
     enable = Column(Boolean, nullable=False)
-    university = relationship("Universities")
+    # university = relationship("Universities")
 
 
 class Universities(MODEL_BASE):
@@ -22,11 +22,12 @@ class Universities(MODEL_BASE):
     """
     __tablename__ = "universities"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    province_id = Column(Integer, ForeignKey("provinces.id"))
+    # province_id = Column(Integer, ForeignKey("provinces.id"))
+    province_id = Column(Integer, index=True, nullable=False)
     university_id = Column(VARCHAR(64), index=True, nullable=False)
     university_name = Column(VARCHAR(128), index=True, nullable=False, unique=True)
     enable = Column(Boolean, nullable=False)
-    major = relationship("Colleges")
+    # major = relationship("Colleges")
 
 
 class Colleges(MODEL_BASE):
@@ -35,11 +36,12 @@ class Colleges(MODEL_BASE):
     """
     __tablename__ = "colleges"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    university_id = Column(Integer, ForeignKey("universities.id"))
+    university_id = Column(Integer, index=True, nullable=False)
+    # university_id = Column(Integer, ForeignKey("universities.id"))
     college_id = Column(VARCHAR(64), index=True, nullable=False)
     college_name = Column(VARCHAR(128), index=True, nullable=False)
     enable = Column(Boolean, nullable=False)
-    major = relationship("Majors")
+    # major = relationship("Majors")
 
 
 class Majors(MODEL_BASE):
@@ -55,13 +57,14 @@ class Majors(MODEL_BASE):
     __tablename__ = "majors"
     id = Column(Integer, primary_key=True, autoincrement=True)
     major_name = Column(VARCHAR(128), index=True, nullable=False)
-    college_id = Column(Integer, ForeignKey("colleges.id"))
+    # college_id = Column(Integer, ForeignKey("colleges.id"))
+    college_id = Column(Integer, index=True, nullable=False)
     major_id = Column(VARCHAR(64), index=True, nullable=False)
     year = Column(Integer, index=True, nullable=False)
     enrollment = Column(VARCHAR(64), nullable=False)
     exempt = Column(VARCHAR(64), nullable=False)
     enable = Column(Boolean, nullable=False)
-    student = relationship("Students")
+    # student = relationship("Students")
 
 
 class Students(MODEL_BASE):
@@ -82,7 +85,8 @@ class Students(MODEL_BASE):
     student_id = Column(VARCHAR(128), index=True, nullable=False, unique=True)
     name = Column(VARCHAR(64), index=True, nullable=False)
     year = Column(Integer, index=True, nullable=False)
-    major_id = Column(Integer, ForeignKey("majors.id"))
+    # major_id = Column(Integer, ForeignKey("majors.id"))
+    major_id = Column(Integer, index=True, nullable=False)
     subject_1 = Column(Float, index=True, nullable=False)
     subject_2 = Column(Float, index=True, nullable=False)
     subject_3 = Column(Float, index=True, nullable=False)
