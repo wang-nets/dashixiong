@@ -22,7 +22,7 @@ class Universities(MODEL_BASE):
     """
     __tablename__ = "universities"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    province_id = Column(Integer, ForeignKey("provinces.id"), ondelete='CASCADE')
+    province_id = Column(Integer, ForeignKey("provinces.id", ondelete='CASCADE'))
     # province_id = Column(Integer, index=True, nullable=False)
     university_id = Column(VARCHAR(64), index=True, nullable=False)
     university_name = Column(VARCHAR(128), index=True, nullable=False, unique=True)
@@ -37,7 +37,7 @@ class Colleges(MODEL_BASE):
     __tablename__ = "colleges"
     id = Column(Integer, primary_key=True, autoincrement=True)
     # university_id = Column(Integer, index=True, nullable=False)
-    university_id = Column(Integer, ForeignKey("universities.id"), ondelete='CASCADE')
+    university_id = Column(Integer, ForeignKey("universities.id", ondelete='CASCADE'))
     college_id = Column(VARCHAR(64), index=True, nullable=False)
     college_name = Column(VARCHAR(128), index=True, nullable=False)
     enable = Column(Boolean, nullable=False)
@@ -57,7 +57,7 @@ class Majors(MODEL_BASE):
     __tablename__ = "majors"
     id = Column(Integer, primary_key=True, autoincrement=True)
     major_name = Column(VARCHAR(128), index=True, nullable=False)
-    college_id = Column(Integer, ForeignKey("colleges.id"), ondelete='CASCADE')
+    college_id = Column(Integer, ForeignKey("colleges.id", ondelete='CASCADE'))
     # college_id = Column(Integer, index=True, nullable=False)
     major_id = Column(VARCHAR(64), index=True, nullable=False)
     year = Column(Integer, index=True, nullable=False)
@@ -85,7 +85,7 @@ class Students(MODEL_BASE):
     student_id = Column(VARCHAR(128), index=True, nullable=False, unique=True)
     name = Column(VARCHAR(64), index=True, nullable=False)
     year = Column(Integer, index=True, nullable=False)
-    major_id = Column(Integer, ForeignKey("majors.id"), ondelete='CASCADE')
+    major_id = Column(Integer, ForeignKey("majors.id", ondelete='CASCADE'))
     # major_id = Column(Integer, index=True, nullable=False)
     subject_1 = Column(Float, index=True, nullable=False)
     subject_2 = Column(Float, index=True, nullable=False)
