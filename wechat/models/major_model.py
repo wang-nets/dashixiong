@@ -111,7 +111,7 @@ class MajorModel(object):
             """
             删除报考该专业的学生
             """
-            session.query(Students).filter(Students.major_id == major_id).delete()
+            # session.query(Students).filter(Students.major_id == major_id).delete()
             session.query(Majors).filter(Majors.id == major_id).delete()
             session.commit()
         except Exception:

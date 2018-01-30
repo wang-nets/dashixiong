@@ -105,16 +105,28 @@ class CollegeModel(object):
             """
             删除学院之前要删除学院内所有专业
             """
-            major_ids = session.query(Majors.id).filter(Majors.college_id == college_id).all()
-            major_object = MajorModel()
-            for m_id in major_ids:
-                major_object.delete_major_by_id(major_id=m_id)
+            # major_ids = session.query(Majors.id).filter(Majors.college_id == college_id).all()
+            # major_object = MajorModel()
+            # result = True
+            # for m_id in major_ids:
+            #     del_result = major_object.delete_major_by_id(major_id=m_id)
+            #     if not del_result:
+            #         LOG.info("Call delete_college_by_id, execute del major failed! major_id:%s" % m_id)
+            #     result = result and del_result
+            # if result:
+            #     session.query(Colleges).filter(Colleges.id == college_id).delete()
+            #     session.commit()
+            #     return True
+            # else:
+            #     LOG.info("Call delete_college_by_id, execute del major failed!")
+            #     return False
             session.query(Colleges).filter(Colleges.id == college_id).delete()
             session.commit()
         except Exception:
             session.rollback()
             LOG.error("Call delete_college_by_id error:%s" % traceback.format_exc())
-            raise DBOperateException("Delete college info error")
+            # raise DBOperateException("Delete college info error")
+            # return False
 
     @staticmethod
     def update_college_by_id(**kwargs):

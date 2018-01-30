@@ -76,16 +76,25 @@ class ProvinceModel(object):
             """
             删除省份前先删除省份内相关学校
             """
-            university_ids = session.query(Universities.id).filter(Universities.province_id == province_id).all()
-            university_object = UniversityModel()
-            for u_id in university_ids:
-                university_object.delete_university_by_id(university_id=u_id)
+            # university_ids = session.query(Universities.id).filter(Universities.province_id == province_id).all()
+            # university_object = UniversityModel()
+            # result = True
+            # for u_id in university_ids:
+            #     del_result = university_object.delete_university_by_id(university_id=u_id)
+            #     result = result and del_result
+            # if result:
+            #     session.query(Provinces).filter(Provinces.id == province_id).delete()
+            #     session.commit()
+            #     return True
+            # else:
+            #     return False
             session.query(Provinces).filter(Provinces.id == province_id).delete()
             session.commit()
         except Exception:
             session.rollback()
             LOG.error("Call get_province_info_by_id error:%s" % traceback.format_exc())
             raise DBOperateException("Delete province info error")
+            # return False
 
     @staticmethod
     def update_province_by_id(**kwargs):
