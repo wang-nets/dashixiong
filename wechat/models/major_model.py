@@ -108,10 +108,6 @@ class MajorModel(object):
         engine = DbEngine.get_instance()
         session = engine.get_session(autocommit=False, expire_on_commit=True)
         try:
-            """
-            删除报考该专业的学生
-            """
-            # session.query(Students).filter(Students.major_id == major_id).delete()
             session.query(Majors).filter(Majors.id == major_id).delete()
             session.commit()
         except Exception:
