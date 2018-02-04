@@ -211,7 +211,7 @@ class PicPost(Resource):
 
             files = request.files
             image = files.get('file', None)
-            local_name = save_image_to_local(image)
+            local_name = save_image_to_local(image, args_dict['student_id'])
             pic_url = upload_image_to_oss(local_name, args_dict['student_id'])
             self.ret_dict['success'] = "true"
             self.ret_dict['data'] = pic_url

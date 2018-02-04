@@ -35,12 +35,12 @@ def upload_image_to_oss(path, image_name):
         raise InvalidOSSRequestException("Upload image error")
 
 
-def save_image_to_local(image_file):
+def save_image_to_local(image_file, image_name):
     try:
         cache_dir = app.config.get("IMAGE_CACHE_DIR")
-        image_name = image_file.filename
         image = Image.open(image_file.stream)
-        image_local_name = '%s/%s' % (cache_dir, image_name)
+        image_local_name = '%s/%s.jpg' % (cache_dir, image_name)
+        image = image.convert("RGB")
         image.save(image_local_name)
         return image_local_name
     except Exception as e:
